@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN PROJECT</title>
+</head>
+    
+</html><link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    
+    
+    <style type="text/css">
+      *{
+    font-family: 'Roboto', sans-serif;
+    padding:0;
+    margin:0;
+    border:0
+}
+BODY{
+    background-image:url("dp1.jpeg");
+    height: 80%;
+  background-position: center;
+ 
+  background-size: cover;
+}
+header{
+    background-color: rgb(24, 5, 112)
+}
+#header-logo{
+    width:64px;
+    height:64px;
+}
+#header-msg{
+    font-size: 25px;
+    color: white;
+}
+.footer {
+  background-color:rgb(24,5,112);
+  color: #ffffff;
+  text-align: center;
+  font-size: 12px;
+  padding: 15px;
+  position: fixed;
+  height: 75px;
+  bottom: 0px;
+  width: 100%;
+}
+marquee{
+    font-size: 25px;
+    font-weight: 500;
+    color: rgb(177, 209, 230);
+    font-family: sans-serif;
+    }
+#btnOne{
+    
+    color:black;
+}
+#btnOne:focus,#btnOne:hover{
+    box-shadow: none;
+    outline:none;
+}
+
+#tableHead{
+    background-color:rgb(32, 103, 161);
+}
+
+    </style>
+ 
+ <header class="shadow">
+    <div class="header-content d-flex justify-content-center p-2">
+        <img src="gif1.jpeg" alt="" id="header-logo">
+        <h1 class="text-center text-light">
+Parking Lot Management System </h1>
+<div id="header-msg" class="ml-5 align-self-center">
+</div>
+</div>
+</header>
+<div class="form-container mt-5">
+    <form class="w-50 mx-auto" id="entryForm">
+        <h5 class="text-center">
+Add vehicle to Parking Lot</h5>
+<div class="form-group">
+            <label for="owner"><b>Owner:</label></b>
+            <input type="text" class="form-control rounded-0 shadow-sm" id="owner" placeholder="Owner">
+        </div>
+<div class="form-group">
+            <label for="car"><b>vehicle type:</label></b>
+            <input type="text" class="form-control rounded-0 shadow-sm" id="car" placeholder="type with model name">
+        </div>
+<div class="form-group">
+            <label for="licensePlate"><b>License Plate:</label></b>
+            <input type="text" class="form-control rounded-0 shadow-sm" id="licensePlate" placeholder=" indian format">
+        </div>
+<div class="row">
+            <div class="col-6">
+                <label for="entryDate"><b>Entry Date:</label></b>
+                <input type="date" class="form-control rounded-0 shadow-sm" id="entryDate">
+            </div>
+<div class="col-6">
+                <label for="exitDate"><b>Exit Date:</label></b>
+                <input type="date" class="form-control rounded-0 shadow-sm" id="exitDate">
+            </div>
+</div>
+<button type="submit" class="btn btn-warning mx-auto d-block mt-5 rounded-0 shadow" id="btnOne">SAVE</button>
+    </form>
+</div>
+<div class="table-container mt-5 mb-5 w-75 mx-auto" >
+        <h5 class="text-center mb-3">
+List of vehicles in Parking Lot</h5>
+
+        <table class="table table-striped shadow " id="parkingTable">
+                <thead class="text-white" id="tableHead">
+<tr>
+                    <th scope="col">OWNER</th>
+                    <th scope="col">VEHICLE TYPE</th>
+                    <th scope="col">License Plate</th>
+                    <th scope="col">Entry Date</th>
+                    <th scope="col">Exit Date</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+</thead>
+                <tbody id="tableBody">
+                 
+                </tbody>
+              </table>
+</div>
+<div class="footer">
+    <marquee   width="60%" direction="left" height="100px">
+        © 2021 PAVAN V {VERZEO MAJOR CREDITS}
+     </marquee>
+     </div>
+ 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+class Entry{
+    constructor(owner,car,licensePlate,entryDate,exitDate){
+        this.owner = owner;
+        this.car = car;
+        this.licensePlate = licensePlate;
+        this.entryDate = entryDate;
+        this.exitDate = exitDate;
+    }
+}
+class UI{
+    static displayEntries(){
+   
+        const entries = Store.getEntries();
+        entries.forEach((entry) => UI.addEntryToTable(entry));
+    }
+    static addEntryToTable(entry){
+        const tableBody=document.querySelector('#tableBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `   <td>${entry.owner}</td>
+                            <td>${entry.car}</td>
+                            <td>${entry.licensePlate}</td>
+                            <td>${entry.entryDate}</td>
+                            <td>${entry.exitDate}</td>
+                            <td><button class="btn btn-danger delete">X</button></td>
+                        `;
+        tableBody.appendChild(row);
+    }
+    static clearInput(){
+        
+        const inputs = document.querySelectorAll('.form-control');
+        
+        inputs.forEach((input)=>input.value="");
+    }
+    static deleteEntry(target){
+        if(target.classList.contains('delete')){
+            target.parentElement.parentElement.remove();
+        }
+    }
+    static showAlert(message,className){
+        const div = document.createElement('div');
+        div.className=`alert alert-${className} w-50 mx-auto`;
+        div.appendChild(document.createTextNode(message));
+        const formContainer = document.querySelector('.form-container');
+        const form = document.querySelector('#entryForm');
+        formContainer.insertBefore(div,form);
+        setTimeout(() => document.querySelector('.alert').remove(),3000);
+    }
+    static validateInputs(){
+        const owner = document.querySelector('#owner').value;
+        const car = document.querySelector('#car').value;
+        const licensePlate = document.querySelector('#licensePlate').value;
+        const entryDate = document.querySelector('#entryDate').value;
+        const exitDate = document.querySelector('#exitDate').value;
+        var licensePlateRegex = /^([A-Z]{2}[ -][0-9]{1,2}(?: [A-Z])?(?: [A-Z]*)? [0-9]{4})$/;
+        if(owner === '' || car === '' || licensePlate === '' || entryDate === '' || exitDate === ''){
+            UI.showAlert('All fields must me filled!','danger');
+            return false;
+        }
+        if(exitDate < entryDate){
+            UI.showAlert('Exit Date cannot be lower than Entry Date','danger');
+            return false;
+        }
+        
+        return true;
+    }
+}
+class Store{
+    static getEntries(){
+        let entries;
+        if(localStorage.getItem('entries') === null){
+            entries = [];
+        }
+        else{
+            entries = JSON.parse(localStorage.getItem('entries'));
+        }
+        return entries;
+    }
+    static addEntries(entry){
+        const entries = Store.getEntries();
+        entries.push(entry);
+        localStorage.setItem('entries', JSON.stringify(entries));
+    }
+    static removeEntries(licensePlate){
+        const entries = Store.getEntries();
+        entries.forEach((entry,index) => {
+            if(entry.licensePlate === licensePlate){
+                entries.splice(index, 1);
+            }
+        });
+        localStorage.setItem('entries', JSON.stringify(entries));
+    }
+}
+    document.addEventListener('DOMContentLoaded',UI.displayEntries);
+    document.querySelector('#entryForm').addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const owner = document.querySelector('#owner').value;
+        const car = document.querySelector('#car').value;
+        const licensePlate = document.querySelector('#licensePlate').value;
+        const entryDate = document.querySelector('#entryDate').value;
+        const exitDate = document.querySelector('#exitDate').value;
+        if(!UI.validateInputs()){
+            return;
+        }
+        const entry = new Entry(owner, car, licensePlate, entryDate, exitDate);
+        UI.addEntryToTable(entry);
+        Store.addEntries(entry);
+        UI.clearInput();
+        UI.showAlert('Car successfully added to the parking lot','success');
+    });
+
+    document.querySelector('#tableBody').addEventListener('click',(e)=>
+    {
+        UI.deleteEntry(e.target);
+        var licensePlate = e.target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
+        Store.removeEntries(licensePlate);
+        UI.showAlert('Car successfully removed from the parking lot list','success');
+    })
+    </script>
+    </body>
+    </html>
